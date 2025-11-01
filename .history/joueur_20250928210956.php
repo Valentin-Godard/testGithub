@@ -4,7 +4,7 @@
 class joueur{
     private string $prenom;
     private string $nom;
-    private DateTime $birthdate;
+    private Carbon $birthdate;
     private string $image;
     
     public function __construct(string  $prenom, string $nom, DateTime $birthdate, string $image  ) {
@@ -35,13 +35,13 @@ class joueur{
     }
 
     // Getter et Setter pour birthdate
-    public function getBirthdate(): DateTime {
-        return $this->birthdate;
-    }
+    public function getBirthdate(): Carbon { 
+    return $this->birthdate;
+}
 
-    public function setBirthdate(DateTime $birthdate): void {
-        $this->birthdate = $birthdate;
-    }
+public function setBirthdate(Carbon $birthdate): void { 
+    $this->birthdate = $birthdate;
+}
 
     public function getImage(): string {
         return $this->image;

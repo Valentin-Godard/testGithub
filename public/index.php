@@ -1,11 +1,13 @@
 <?php 
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use RedwaneValentin\Foot2Club\Contract\Savable;
 use RedwaneValentin\Foot2Club\Trait\Image;
 use RedwaneValentin\Foot2Club\Joueur;
 use RedwaneValentin\Foot2Club\Enum\Role;
-use DateTime;
+use Carbon\Carbon;;
 use PDO;
+
 
 // Création des joueurs
 $j1 = new Joueur("Kylian", "Mbappé", new DateTime("2000-12-20"), "mbappe.jpg");

@@ -5,7 +5,7 @@ namespace App\Model;
 use App\Contract\Savable;
 use App\Trait\Image;
 use App\Enum\Role;
-use DateTime;
+use Carbon\Carbon;;
 use PDO;
 
 class Joueur implements Savable {
@@ -14,10 +14,10 @@ class Joueur implements Savable {
     private ?int $id;
     private string $prenom;
     private string $nom;
-    private DateTime $birthdate;
+    private Carbon $birthdate;
     private Role $role;
 
-    public function __construct(?int $id, string $prenom, string $nom, DateTime $birthdate, Role $role, string $image) {
+    public function __construct(?int $id, string $prenom, string $nom, Carbon $birthdate, Role $role, string $image) { 
         $this->id = $id;
         $this->prenom = $prenom;
         $this->nom = $nom;
@@ -57,13 +57,13 @@ class Joueur implements Savable {
     }
 
     // Getter et Setter pour birthdate
-    public function getBirthdate(): DateTime {
-        return $this->birthdate;
-    }
+    public function getBirthdate(): Carbon { 
+    return $this->birthdate;
+}
 
-    public function setBirthdate(DateTime $birthdate): void {
-        $this->birthdate = $birthdate;
-    }
+public function setBirthdate(Carbon $birthdate): void { 
+    $this->birthdate = $birthdate;
+}
 
     public function getImage(): string {
         return $this->image;

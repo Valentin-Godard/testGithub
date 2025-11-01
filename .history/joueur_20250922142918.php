@@ -3,7 +3,7 @@
 class joueur{
     private string $prenom;
     private string $nom;
-    private DateTime $birthdate;
+    private Carbon $birthdate;
     private string $image;
     
     public function __construct(string  $prenom, string $nom, DateTime $birthdate, string $image  ) {

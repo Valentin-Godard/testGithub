@@ -4,7 +4,7 @@ namespace App\Database;
 use App\Model\Joueur;
 use App\Enum\Role;
 use PDO;
-use DateTime;
+use Carbon\Carbon;;
 
 class JoueurDatabase {
     private PDO $pdo;
@@ -62,7 +62,7 @@ class JoueurDatabase {
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
-                new DateTime($data['date_naissance']),
+                Carbon::parse($data['date_naissance']),
                 $data['photo']
             );
         }
@@ -82,7 +82,7 @@ class JoueurDatabase {
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
-                new DateTime($data['date_naissance']),
+                Carbon::parse($data['date_naissance']),
                 $data['photo']
             );
         }

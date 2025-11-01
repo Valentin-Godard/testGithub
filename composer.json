@@ -6,5 +6,8 @@
             "RedwaneValentin\\Foot2Club\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "respect/validation": "^2.4",
+        "nesbot/carbon": "^3.10"
+    }
 }

@@ -4,7 +4,7 @@ namespace RedwaneValentin\Foot2Club\Database;
 use RedwaneValentin\Foot2Club\Model\Joueur;
 use RedwaneValentin\Foot2Club\Enum\Role;
 use PDO;
-use DateTime;
+use Carbon\Carbon;;
 
 class JoueurDatabase {
     private PDO $pdo;
@@ -64,7 +64,7 @@ class JoueurDatabase {
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
-                new DateTime($data['date_naissance']),
+                Carbon::parse($data['date_naissance']),
                 Role::from($data['role']),
                 $data['photo']
             );
@@ -85,7 +85,7 @@ class JoueurDatabase {
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
-                new DateTime($data['date_naissance']),
+                Carbon::parse($data['date_naissance']),
                 Role::from($data['role']),
                 $data['photo']
             );

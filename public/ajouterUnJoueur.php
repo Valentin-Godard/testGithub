@@ -1,36 +1,62 @@
 <?php
-//require_once __DIR__ . '/../autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../includes/database.php';
 
 use RedwaneValentin\Foot2Club\Model\Joueur;
 use RedwaneValentin\Foot2Club\Enum\Role;
 use RedwaneValentin\Foot2Club\Database\JoueurDatabase;
+use Carbon\Carbon; 
+use Respect\Validation\Validator as v;
+use Respect\Validation\Exceptions\NestedValidationException;
 
-//$joueurDb = new JoueurDatabase($pdo);
+$pdo_instance = App\Database::getInstance()->getConnection();
+$joueurDb = new JoueurDatabase($pdo_instance);
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $prenom = trim($_POST["prenom"]);
     $nom = trim($_POST["nom"]);
-    $dateNaissance = new DateTime($_POST["date_naissance"]);
+    $dateNaissanceInput = $_POST["date_naissance"];
     $roleValue = $_POST["role"] ?? null;
 
-    try { $role = Role::from($roleValue); } 
-    catch (ValueError $e) { $message = "❌ Rôle invalide."; }
+    // Définir les règles de validation
+    $stringValidator = v::stringType()->notEmpty()->length(2, 255);
+    $dateValidator = v::date('Y-m-d')->notEmpty()->max(Carbon::now()->format('Y-m-d')); // Date doit être dans le passé
+    $roleValidator = v::in(array_column(Role::cases(), 'value')); // Valide que le rôle est bien dans l'Enum
 
-    $photoName = "";
-    if (!empty($_FILES["photo"]["name"])) {
-        $uploadDir = __DIR__ . "/../public/uploads/";
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
-        $photoName = basename($_FILES["photo"]["name"]);
-        if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $uploadDir . $photoName))
-            $message = "❌ Erreur lors de l’upload de la photo.";
-    }
+    try {
+        // Valider les données
+        $stringValidator->assert($prenom);
+        $stringValidator->assert($nom);
+        $dateValidator->assert($dateNaissanceInput);
+        $roleValidator->assert($roleValue);
 
-    if (empty($message)) {
-        $joueur = new Joueur(null, $prenom, $nom, $dateNaissance, $role, $photoName);
-        $joueurDb->insert($joueur);
-        $message = "✅ Joueur ajouté avec succès !";
+        // Si valide, on continue...
+        $dateNaissance = Carbon::parse($dateNaissanceInput); // On crée l'objet Carbon
+        $role = Role::from($roleValue);
+
+        // ... (gestion de l'upload photo) ...
+        $photoName = "";
+        if (!empty($_FILES["photo"]["name"])) {
+            $uploadDir = __DIR__ . "/uploads/"; // Simplifié
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $photoName = basename($_FILES["photo"]["name"]);
+            if (!move_uploaded_file($_FILES["photo"]["tmp_name"], $uploadDir . $photoName))
+                $message = "❌ Erreur lors de l’upload de la photo.";
+        }
+
+        if (empty($message)) { // Si pas d'erreur (upload ou autre)
+            $joueur = new Joueur(null, $prenom, $nom, $dateNaissance, $role, $photoName);
+            $joueurDb->insert($joueur);
+            $message = "✅ Joueur ajouté avec succès !";
+        }
+
+    } catch(NestedValidationException $e) {
+        // En cas d'erreur de validation
+        $message = "❌ Erreurs de validation : <br>" . implode('<br>', $e->getMessages());
+    } catch (ValueError $e) { 
+        // En cas de rôle invalide (ne devrait plus arriver grâce à la validation)
+        $message = "❌ Rôle invalide."; 
     }
 }
 ?>
