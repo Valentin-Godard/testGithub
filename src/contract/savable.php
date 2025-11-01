@@ -1,5 +1,5 @@
 <?php
-namespace App\Contract;
+namespace RedwaneValentin\Foot2Club\Contract;
 
 use PDO;
 

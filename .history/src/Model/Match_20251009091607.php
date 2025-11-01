@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace RedwaneValentin\Foot2Club\Model;
 
 use DateTime;
 require_once "equipe.php";

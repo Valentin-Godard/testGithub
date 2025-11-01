@@ -1,6 +1,6 @@
 <?php
 spl_autoload_register(function ($class) {
-    $prefix = 'App\\';
+    $prefix = 'RedwaneValentin\Foot2Club\\';
     $baseDir = __DIR__ . '/src/';
 
     $len = strlen($prefix);

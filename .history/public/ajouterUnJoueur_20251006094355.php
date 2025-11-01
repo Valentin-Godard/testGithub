@@ -1,9 +1,9 @@
 <?php
 
-use App\Contract\Savable;
-use App\trait\Image;
-use App\Joueur;
-use App\Enum\Role;
+use RedwaneValentin\Foot2Club\Contract\Savable;
+use RedwaneValentin\Foot2Club\trait\Image;
+use RedwaneValentin\Foot2Club\Joueur;
+use RedwaneValentin\Foot2Club\Enum\Role;
 use DateTime;
 use PDO;
 

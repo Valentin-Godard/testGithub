@@ -1,7 +1,7 @@
 <?php
-namespace App\Database;
+namespace RedwaneValentin\Foot2Club\Database;
 
-use App\Model\MatchFoot;
+use RedwaneValentin\Foot2Club\Model\MatchFoot;
 use DateTime;
 use PDO;
 

@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil — FC Aurora</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <h1>Bienvenue sur la page d'accueil</h1>
-    <p>Vous êtes connecté en tant que : <?php echo $_COOKIE['username']; ?></p>
-    <a href="deconnexion.php">Se déconnecter</a>
+<body class="page-root">
+  <header class="site-header fade-in">
+    <div class="brand">
+      <div class="logo">⚽</div>
+      <h1>FC Aurora</h1>
+    </div>
+    <div class="user-area">
+      <span>Connecté en tant que : <strong><?php echo $_COOKIE['username'] ?? 'Invité'; ?></strong></span>
+      <a class="btn-logout" href="deconnexion.php">Se déconnecter</a>
+    </div>
+  </header>
+
+  <main class="container fade-in">
+    <section class="hero card">
+      <h2>Bienvenue sur la page d'accueil</h2>
+      <p>Gérez vos joueurs et préparez les prochains matchs facilement.</p>
+      <div class="hero-cta">
+        <a href="ajouter_joueur.php" class="btn">Ajouter un joueur</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer fade-in">
+    <small>© <span id="year"></span> FC Aurora — Gestion du club</small>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      document.querySelectorAll('.fade-in').forEach((el, i)=>{
+        el.style.transition = 'all 450ms ease';
+        el.style.transitionDelay = (i*100)+'ms';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    });
+  </script>
 </body>
 </html>

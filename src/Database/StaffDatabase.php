@@ -1,7 +1,7 @@
 <?php
-namespace App\Database;
+namespace RedwaneValentin\Foot2Club\Database;
 
-use App\Model\Staff;
-use App\Enum\Role;
+use RedwaneValentin\Foot2Club\Model\Staff;
+use RedwaneValentin\Foot2Club\Enum\Role;
 use PDO;
 use DateTime;

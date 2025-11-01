@@ -1,5 +1,5 @@
 <?php
-namespace App\Validation;
+namespace RedwaneValentin\Foot2Club\Validation;
 
 
 class EmailValidation {

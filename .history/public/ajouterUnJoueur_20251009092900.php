@@ -2,8 +2,8 @@
 require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../includes/database.php';
 
-use App\Model\Joueur;
-use App\Enum\Role;
+use RedwaneValentin\Foot2Club\Model\Joueur;
+use RedwaneValentin\Foot2Club\Enum\Role;
 
 $message = "";
 

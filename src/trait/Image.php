@@ -1,5 +1,5 @@
 <?php
-namespace App\Trait;
+namespace RedwaneValentin\Foot2Club\Trait;
 
 trait Image {
     private string $image;

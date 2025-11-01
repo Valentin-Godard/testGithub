@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Model;
+namespace RedwaneValentin\Foot2Club\Model;
 
 use MatchFoot;
-use App\Model\Joueur;
+use RedwaneValentin\Foot2Club\Model\Joueur;
 
 class Equipe{
     

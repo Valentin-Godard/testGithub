@@ -1,5 +1,5 @@
 <?php
-namespace App\Enum;
+namespace RedwaneValentin\Foot2Club\Enum;
 
 enum Role: string {
     case ATTAQUANT = 'Attaquant';

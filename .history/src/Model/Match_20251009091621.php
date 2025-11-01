@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Model;
+namespace RedwaneValentin\Foot2Club\Model;
 
 use DateTime;
-use App\Model\E;
+use RedwaneValentin\Foot2Club\Model\E;
 require_once "clubOppose.php";
 
 class MatchFoot {

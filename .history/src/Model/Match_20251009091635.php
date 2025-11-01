@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Model;
+namespace RedwaneValentin\Foot2Club\Model;
 
 use DateTime;
-use App\Model\Equipe;
-use App\
+use RedwaneValentin\Foot2Club\Model\Equipe;
+use RedwaneValentin\Foot2Club\
 
 class MatchFoot {
 

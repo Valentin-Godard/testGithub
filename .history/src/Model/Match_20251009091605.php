@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace RedwaneValentin\Foot2Club\Model;
 
 use 
 require_once "equipe.php";

@@ -1,7 +1,7 @@
 <?php
-namespace App\;
+namespace RedwaneValentin\Foot2Club\;
 
-use App\Model\Equipe;
+use RedwaneValentin\Foot2Club\Model\Equipe;
 use PDO;
 
 class EquipeDatabase {

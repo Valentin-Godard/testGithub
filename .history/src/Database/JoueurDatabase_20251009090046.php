@@ -1,8 +1,8 @@
 <?php
-namespace App\Database;
+namespace RedwaneValentin\Foot2Club\Database;
 
-use App\Mode\Joueur;
-use App\Enum\Role;
+use RedwaneValentin\Foot2Club\Mode\Joueur;
+use RedwaneValentin\Foot2Club\Enum\Role;
 use PDO;
 use DateTime;
 

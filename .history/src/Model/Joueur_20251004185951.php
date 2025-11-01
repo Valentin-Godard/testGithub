@@ -3,9 +3,9 @@
 
 namespace App;
 
-use App\Contract\Savable;
-use App\Trait\Image;
-use App\Enum\Role;
+use RedwaneValentin\Foot2Club\Contract\Savable;
+use RedwaneValentin\Foot2Club\Trait\Image;
+use RedwaneValentin\Foot2Club\Enum\Role;
 use DateTime;
 use PDO;
 
