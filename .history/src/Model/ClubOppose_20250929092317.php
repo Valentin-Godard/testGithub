@@ -29,3 +29,7 @@ class ClubOppose{
         $this->city = $city;
     }
 }
+
+/*
+$real = new ClubOppose("Santiago Bernabeu", "Madrid");
+*/
