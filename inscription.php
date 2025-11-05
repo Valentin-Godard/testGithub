@@ -15,7 +15,7 @@
         <input type="email" id="email" name="email" required>
         <br>
         <label for="password">Mot de passe:</label>
-        <input type="password" id="mdp" name="mdp" required>
+        <input type="password" id="password" name="password" required>
         <br>
         <button type="submit" name="ok">S'inscrire</button>
         <button type="button"><a href="connexion.php">Se connecter</a></button>

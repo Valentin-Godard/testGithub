@@ -25,7 +25,7 @@ class JoueurDatabase {
         $stmt->execute([
             ':nom' => $joueur->getNom(),
             ':prenom' => $joueur->getPrenom(),
-            ':date_naissance' => $joueur->getBirthdate()->format("Y-m-d"),
+            ':date_naissance' => $joueur->getDateNaissance()->format("Y-m-d"),
             ':photo' => $joueur->getImage(),
             ':role' => $joueur->getRole()->value
         ]);
@@ -45,7 +45,7 @@ class JoueurDatabase {
             ':id' => $joueur->getId(),
             ':nom' => $joueur->getNom(),
             ':prenom' => $joueur->getPrenom(),
-            ':date_naissance' => $joueur->getBirthdate()->format("Y-m-d"),
+            ':date_naissance' => $joueur->getDateNaissance()->format("Y-m-d"),
             ':photo' => $joueur->getImage(),
             ':role' => $joueur->getRole()->value
         ]);

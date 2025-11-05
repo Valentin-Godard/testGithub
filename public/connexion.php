@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion — FC Aurora</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="page-root">
-  <main class="container fade-in">
-    <section class="card form-section">
-      <h2>Connexion</h2>
-      <?php
-      $servername = "localhost";
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+ $servername = "localhost";
       $username = "root";
       $password = "";
       $dbname = "footclub";
@@ -40,7 +30,19 @@
               }
           }
       }
-      ?>
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — FC Aurora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-root">
+  <main class="container fade-in">
+    <section class="card form-section">
+      <h2>Connexion</h2>
 
       <form method="POST" action="" class="styled-form" novalidate>
         <label for="username">Nom d'utilisateur :</label>

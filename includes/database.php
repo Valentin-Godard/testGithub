@@ -38,8 +38,7 @@ class Database
     }
 }
 
-// On crée l'instance et la variable $connection 
-// pour qu'elle soit disponible dans les autres fichiers.
+// On crée l'instance et la variable $connection pour qu'elle soit disponible dans les autres fichiers.
 $db = Database::getInstance();
 $connection = $db->getConnection();
 

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../includes/database.php';
 
@@ -22,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Définir les règles de validation
     $stringValidator = v::stringType()->notEmpty()->length(2, 255);
     $dateValidator = v::date('Y-m-d')->notEmpty()->max(Carbon::now()->format('Y-m-d')); // Date doit être dans le passé
-    $roleValidator = v::in(array_column(Role::cases(), 'value')); // Valide que le rôle est bien dans l'Enum
+    $roleValidator = v::in(array_column(Role::cases(), 'value')); 
 
     try {
         // Valider les données
@@ -31,11 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $dateValidator->assert($dateNaissanceInput);
         $roleValidator->assert($roleValue);
 
-        // Si valide, on continue...
         $dateNaissance = Carbon::parse($dateNaissanceInput); // On crée l'objet Carbon
         $role = Role::from($roleValue);
 
-        // ... (gestion de l'upload photo) ...
         $photoName = "";
         if (!empty($_FILES["photo"]["name"])) {
             $uploadDir = __DIR__ . "/uploads/"; // Simplifié
@@ -45,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $message = "❌ Erreur lors de l’upload de la photo.";
         }
 
-        if (empty($message)) { // Si pas d'erreur (upload ou autre)
+        if (empty($message)) { 
             $joueur = new Joueur(null, $prenom, $nom, $dateNaissance, $role, $photoName);
             $joueurDb->insert($joueur);
             $message = "✅ Joueur ajouté avec succès !";
@@ -126,5 +125,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       });
     });
   </script>
+  <script>
+document.getElementById('file-upload').onchange = function () {
+    var fileName = this.files[0] ? this.files[0].name : "Aucun fichier sélectionné";
+    var span = this.previousElementSibling.querySelector('.player-form-file-name');
+    span.textContent = fileName;
+};
+</script>
 </body>
 </html>

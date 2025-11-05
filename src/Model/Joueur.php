@@ -5,7 +5,7 @@ namespace RedwaneValentin\Foot2Club\Model;
 use RedwaneValentin\Foot2Club\Contract\Savable;
 use RedwaneValentin\Foot2Club\Trait\Image;
 use RedwaneValentin\Foot2Club\Enum\Role;
-use Carbon\Carbon;;
+use Carbon\Carbon;
 use PDO;
 
 class Joueur implements Savable {
@@ -14,14 +14,14 @@ class Joueur implements Savable {
     private ?int $id;
     private string $prenom;
     private string $nom;
-    private Carbon $birthdate;
+    private Carbon $dateNaissance;
     private Role $role;
 
-    public function __construct(?int $id, string $prenom, string $nom, Carbon $birthdate, Role $role, string $image) { 
+    public function __construct(?int $id, string $prenom, string $nom, Carbon $dateNaissance, Role $role, string $image) { 
         $this->id = $id;
         $this->prenom = $prenom;
         $this->nom = $nom;
-        $this->birthdate = $birthdate;
+        $this->dateNaissance = $dateNaissance;
         $this->role = $role;
         $this->setImage($image);
     }
@@ -30,11 +30,11 @@ class Joueur implements Savable {
     public function save(PDO $pdo): void {
         if ($this->id === null) {
             $stmt = $pdo->prepare("INSERT INTO joueurs (nom, prenom, date_naissance, photo, role) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$this->nom, $this->prenom, $this->birthdate->format("Y-m-d"), $this->getImage(), $this->role->value]);
+            $stmt->execute([$this->nom, $this->prenom, $this->dateNaissance->format("Y-m-d"), $this->getImage(), $this->role->value]);
             $this->id = $pdo->lastInsertId();
         } else {
             $stmt = $pdo->prepare("UPDATE joueurs SET nom=?, prenom=?, date_naissance=?, photo=?, role=? WHERE id=?");
-            $stmt->execute([$this->nom, $this->prenom, $this->birthdate->format("Y-m-d"), $this->getImage(), $this->role->value, $this->id]);
+            $stmt->execute([$this->nom, $this->prenom, $this->dateNaissance->format("Y-m-d"), $this->getImage(), $this->role->value, $this->id]);
         }
     }
 
@@ -56,14 +56,14 @@ class Joueur implements Savable {
         $this->nom = $nom;
     }
 
-    // Getter et Setter pour birthdate
-    public function getBirthdate(): Carbon { 
-    return $this->birthdate;
+    // Getter et Setter pour dateNaissance
+    public function getDateNaissance(): Carbon { 
+    return $this->dateNaissance;
 }
 
-public function setBirthdate(Carbon $birthdate): void { 
-    $this->birthdate = $birthdate;
-}
+    public function setDateNaissance(Carbon $dateNaissance): void { 
+        $this->dateNaissance = $dateNaissance;
+    }
 
     public function getImage(): string {
         return $this->image;
@@ -81,17 +81,16 @@ public function setBirthdate(Carbon $birthdate): void {
         $this->role = $role;
     }
     
-    //  Utilisation de carbon pour l'âge
 
-    
-      //Calcule et retourne l'âge du joueur
+    //  Utilisation de carbon pour l'âge
+    //Calcule et retourne l'âge du joueur
     public function getAge(): int {
-        return $this->birthdate->age;
+        return $this->dateNaissance->age;
     }
 
     //Retourne la date de naissance au format J/M/A)
-    public function getFormattedBirthdate(): string {
-        return $this->birthdate->format('d/m/Y'); 
+    public function getDateDeNaissance(): string {
+        return $this->dateNaissance->format('d/m/Y'); 
     }
 
 }

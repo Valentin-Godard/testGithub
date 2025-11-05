@@ -1,76 +1,331 @@
-<?php 
+<?php
+
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../includes/database.php';
 
-use RedwaneValentin\Foot2Club\Contract\Savable;
-use RedwaneValentin\Foot2Club\Trait\Image;
-use RedwaneValentin\Foot2Club\Joueur;
+
+use RedwaneValentin\Foot2Club\Model\Joueur;
+use RedwaneValentin\Foot2Club\Model\MatchFoot;
+use RedwaneValentin\Foot2Club\Model\Equipe;
 use RedwaneValentin\Foot2Club\Enum\Role;
-use Carbon\Carbon;;
-use PDO;
+use RedwaneValentin\Foot2Club\Enum\RoleStaff;
+use RedwaneValentin\Foot2Club\Model\Staff;
+use RedwaneValentin\Foot2Club\Database\StaffDatabase;
+use RedwaneValentin\Foot2Club\Database\JoueurDatabase;
+use RedwaneValentin\Foot2Club\Database\MatchDatabase;
+use RedwaneValentin\Foot2Club\Database\EquipeDatabase;
+use RedwaneValentin\Foot2Club\Database\JoueurEquipeDatabase;
 
 
-// Création des joueurs
-$j1 = new Joueur("Kylian", "Mbappé", new DateTime("2000-12-20"), "mbappe.jpg");
-$j2 = new Joueur("Lionel", "Messi", new DateTime("1987-06-24"), "messi.jpg");
-$j3 = new Joueur("Neymar", "Jr", new DateTime("1992-02-05"), "neymar.jpg");
-$j4 = new Joueur("Sergio", "Ramos", new DateTime("1986-03-30"), "ramos.jpg");
-$j5 = new Joueur("Luka", "Modric", new DateTime("1985-09-09"), "modric.jpg");
-$j6 = new Joueur("Karim", "Benzema", new DateTime("1987-12-19"), "benzema.jpg");
+$joueurDb = new RedwaneValentin\Foot2Club\Database\JoueurDatabase($connection);
+$matchDb = new RedwaneValentin\Foot2Club\Database\MatchDatabase($connection);
+$equipeDb = new EquipeDatabase($db);
+$joueurEquipeDb = new JoueurEquipeDatabase($db);
 
-// Création des équipes
-$equipe1 = new Equipe("PSG");   
-$equipe2 = new Equipe("Real Madrid");
-$equipe3 = new Equipe("FC Barcelone");
-$equipe4 = new Equipe("Manchester City");
+$teamsStmt = $pdo->query("SELECT id, nom FROM equipe");
+$teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Ajout des joueurs aux équipes avec leurs rôles
-$equipe1->ajouterJoueur($j1, "Attaquant");
-$equipe1->ajouterJoueur($j2, "Attaquant");
-$equipe1->ajouterJoueur($j3, "Ailier");
-$equipe2->ajouterJoueur($j4, "Défenseur");
-$equipe2->ajouterJoueur($j5, "Milieu");
-$equipe2->ajouterJoueur($j6, "Attaquant");
+$clubsStmt = $pdo->query("SELECT id, ville FROM club_adverse");
+$clubs = $clubsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Création des clubs opposés
-$clubOppose1 = new ClubOppose("Santiago Bernabeu", "Madrid");
-$clubOppose2 = new ClubOppose("Camp Nou", "Barcelone");
-$clubOppose3 = new ClubOppose("Etihad Stadium", "Manchester");
+$message = "";
 
-// Création des matchs
-$match1 = new MatchFoot("3", "1", new DateTime("2025-10-15"), "Paris");
-$match2 = new MatchFoot("2", "2", new DateTime("2025-11-20"), "Madrid");
-$match3 = new MatchFoot("1", "0", new DateTime("2025-12-05"), "Barcelone");
-$match4 = new MatchFoot("0", "3", new DateTime("2026-01-10"), "Manchester");
+// ---------------------- AJOUT D'ÉQUIPE ----------------------
 
-// Ajout des matchs aux équipes
-$equipe1->ajouterMatch($match1);
-$equipe2->ajouterMatch($match2);
-$equipe3->ajouterMatch($match3);
-$equipe4->ajouterMatch($match4);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'equipe') {
+    $nomEquipe = trim($_POST["nom"]);
+    $ville = trim($_POST["ville"]);
+    $adresse = trim($_POST["adresse"]);
 
-// Affichage des informations
-function afficherInformationsEquipe(Equipe $equipe) {
-    echo "Équipe: " . $equipe->getNom() . "\n";
-    echo "Joueurs:\n";
-    foreach ($equipe->getJoueurs() as $entry) {
-        $joueur = $entry['joueur'];
-        $role = $entry['role'];
-        echo "- " . $joueur->getPrenom() . " " . $joueur->getNom() . " (" . $role . ")\n";
+    if ($nomEquipe !== "" && $ville !== "" && $adresse !== "") {
+        $equipe = new Equipe(null, $nomEquipe, '', ''); // nom seulement pour équipes
+        $equipeDb = new EquipeDatabase($pdo);
+
+        $success = $equipeDb->addEquipeWithClubAdverseDirect($equipe, $ville, $adresse);
+
+        if ($success) {
+            $message = "✅ Équipe ajoutée avec succès !";
+        } else {
+            $message = "❌ Erreur lors de l'ajout de l'équipe.";
+        }
+    } else {
+        $message = "❌ Veuillez remplir tous les champs.";
     }
-    echo "\n";
 }
 
-afficherInformationsEquipe($equipe1);
-afficherInformationsEquipe($equipe2);
-afficherInformationsEquipe($equipe3);
-afficherInformationsEquipe($equipe4);
 
-/*
-$equipe1 = new Equipe("PSG");
-$equipe1->ajouterJoueur($j1, "Attaquant");
-$equipe1->ajouterJoueur($j2, "Milieu");
-$equipe1->ajouterJoueur($j3, "Ailier");
-*/
+
+// ---------------------- AJOUT DE JOUEUR ----------------------
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'joueur') {
+    $prenom = trim($_POST["prenom"]);
+    $nom = trim($_POST["nom"]);
+    $dateNaissance = new DateTime($_POST["date_naissance"]);
+    $equipeId = (int)$_POST["equipe_id"];
+    $roleValue = $_POST["role"];
+
+    // Gestion de la photo
+    $photoName = "";
+    if (!empty($_FILES["photo"]["name"])) {
+        $uploadDir = __DIR__ . "/uploads/";
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+        $photoName = basename($_FILES["photo"]["name"]);
+        move_uploaded_file($_FILES["photo"]["tmp_name"], $uploadDir . $photoName);
+    }
+
+    // 1️⃣ Ajouter le joueur
+    $joueur = new Joueur(null, $prenom, $nom, $dateNaissance, null, $photoName);
+    $joueurDb->insert($joueur);
+    $joueurId = $pdo->lastInsertId();
+
+    // 2️⃣ Ajouter la relation joueur ↔ équipe avec rôle
+    $joueurEquipeDb->insert($joueurId, $equipeId, $roleValue);
+
+    $message = "✅ Joueur ajouté avec succès dans l'équipe !";
+}
+
+// ---------------------- AJOUT DE STAFF ----------------------
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'staff') {
+    $prenom = trim($_POST["prenom"]);
+    $nom = trim($_POST["nom"]);
+    $image = trim($_POST["image"]);
+    $roleValue = trim($_POST["role"]);
+
+    if ($prenom !== "" && $nom !== "" && $roleValue !== "") {
+        $role = RoleStaff::from($roleValue);
+        $staff = new Staff($prenom, $nom, $image, $role);
+        $staffDb = new StaffDatabase($pdo);
+        $success = $staffDb->insert($staff);
+
+        $message = $success ? "✅ Membre du staff ajouté avec succès !" : "❌ Erreur lors de l'ajout du staff.";
+    } else {
+        $message = "❌ Veuillez remplir tous les champs obligatoires.";
+    }
+}
+
+// ---------------------- AJOUT DE MATCH ----------------------
+if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'match') {
+    $teamScore = (int)$_POST['team_score'];
+    $opponentScore = (int)$_POST['opponent_score'];
+    $dateMatch = new DateTime($_POST['date_match']);
+    $city = trim($_POST['city']);
+    $teamId = (int)$_POST['team_id'];
+    $clubAdvId = (int)$_POST['club_adv_id'];
+
+    $match = new MatchFoot(
+        null,
+        $teamScore,
+        $opponentScore,
+        $dateMatch,
+        $teamId,
+        $city,
+        $clubAdvId
+    );
+
+    $matchDb = new MatchDatabase($pdo);
+    $matchDb->insert($match);
+
+    $message = "✅ Match ajouté avec succès !";
+}
+
 
 ?>
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion FootDeClub</title>
+    <style>
+        body { font-family: Arial; margin: 30px; background-color: #f7f7f7; }
+        form { background: white; padding: 20px; border-radius: 10px; width: 400px; margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input, select, button { width: 100%; padding: 8px; margin-top: 5px; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-top: 15px; }
+        button:hover { background-color: #45a049; }
+        .message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>Ajouter une équipe</h1>
+
+<form method="POST">
+    <input type="hidden" name="form_type" value="equipe">
+
+    <label>Nom de l'équipe :</label>
+    <input type="text" name="nom" required>
+
+    <label>Ville :</label>
+    <input type="text" name="ville" required>
+
+    <label>Adresse :</label>
+    <input type="text" name="adresse" required>
+
+    <button type="submit">Ajouter l'équipe</button>
+</form>
+
+<h1>Ajouter un joueur</h1>
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="form_type" value="joueur">
+    <label>Prénom :</label>
+    <input type="text" name="prenom" required>
+    <label>Nom :</label>
+    <input type="text" name="nom" required>
+    <label>Date de naissance :</label>
+    <input type="date" name="date_naissance" required>
+
+    <label>Équipe :</label>
+    <select name="equipe_id" required>
+        <option value="">-- Sélectionner une équipe --</option>
+        <?php foreach ($equipes as $equipe): ?>
+            <option value="<?= $equipe->getId() ?>"><?= htmlspecialchars($equipe->getNom()) ?></option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>Rôle :</label>
+    <select name="role" required>
+        <option value="">-- Sélectionner un rôle --</option>
+        <?php foreach (Role::cases() as $case): ?>
+            <option value="<?= $case->value ?>"><?= $case->value ?></option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>Photo :</label>
+    <input type="file" name="photo" accept="image/*" required>
+    <button type="submit">Ajouter le joueur</button>
+</form>
+
+<h1>Ajouter un membre du staff</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="form_type" value="staff">
+
+    <label>Prénom :</label>
+    <input type="text" name="prenom" required>
+
+    <label>Nom :</label>
+    <input type="text" name="nom" required>
+
+    <label>Image (nom du fichier ou URL) :</label>
+    <input type="text" name="image" placeholder="ex: dupont.jpg">
+
+    <label>Rôle :</label>
+    <select name="role" required>
+        <option value="">-- Choisir un rôle --</option>
+        <?php foreach (RoleStaff::cases() as $role): ?>
+            <option value="<?= htmlspecialchars($role->value) ?>"><?= htmlspecialchars($role->value) ?></option>
+        <?php endforeach; ?>
+    </select>
+
+    <button type="submit">Ajouter</button>
+</form>
+
+<<h1>Ajouter un match</h1>
+
+<form method="POST">
+    <input type="hidden" name="form_type" value="match">
+
+    <label>Score équipe :</label>
+    <input type="number" name="team_score" required>
+
+    <label>Score adverse :</label>
+    <input type="number" name="opponent_score" required>
+
+    <label>Date du match :</label>
+    <input type="date" name="date_match" required>
+
+    <label>Ville :</label>
+    <input type="text" name="city" required>
+
+    <label>Équipe :</label>
+    <select name="team_id" required>
+        <?php foreach ($teams as $team): ?>
+            <option value="<?= (int)$team['id'] ?>">
+                <?= htmlspecialchars($team['nom']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>Club adverse :</label>
+    <select name="club_adv_id" required>
+        <?php foreach ($clubs as $club): ?>
+            <option value="<?= (int)$club['id'] ?>">
+                <?= htmlspecialchars($club['ville']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <button type="submit">Ajouter le match</button>
+</form>
+
+
+<?php if (!empty($message)): ?>
+    <p class="message"><?= htmlspecialchars($message) ?></p>
+<?php endif; ?>
+
+
+<h2>Liste des joueurs</h2>
+
+<?php
+$stmt = $pdo->query("SELECT j.id, j.nom, j.prenom, e.nom AS equipe
+                     FROM joueur j
+                     LEFT JOIN equipe e ON j.id = e.id"); 
+$joueurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Équipe</th>
+    </tr>
+    <?php foreach ($joueurs as $joueur): ?>
+        <tr>
+            <td><?= $joueur['id'] ?></td>
+            <td><?= htmlspecialchars($joueur['nom']) ?></td>
+            <td><?= htmlspecialchars($joueur['prenom']) ?></td>
+            <td><?= htmlspecialchars($joueur['equipe']) ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+<h2>Résultats des matchs</h2>
+
+<?php
+$stmt = $pdo->query("
+    SELECT 
+        m.id,
+        e1.nom AS equipe,
+        e2.nom AS equipe_adverse,
+        m.score_equipe,
+        m.score_equipe_adv,
+        m.date,
+        m.ville
+    FROM matchs m
+    LEFT JOIN equipe e1 ON m.equipe_id = e1.id
+    LEFT JOIN equipe e2 ON m.club_adv_id = e2.id
+    ORDER BY m.date DESC
+");
+$matchs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Équipe</th>
+        <th>Adversaire</th>
+        <th>Score</th>
+        <th>Date</th>
+        <th>Ville</th>
+    </tr>
+    <?php foreach ($matchs as $match): ?>
+        <tr>
+            <td><?= htmlspecialchars($match['equipe']) ?></td>
+            <td><?= htmlspecialchars($match['equipe_adverse']) ?></td>
+            <td><?= $match['score_equipe'] ?> - <?= $match['score_equipe_adv'] ?></td>
+            <td><?= htmlspecialchars($match['date']) ?></td>
+            <td><?= htmlspecialchars($match['ville']) ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+</body>
+</html>
