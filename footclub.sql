@@ -66,11 +66,11 @@ INSERT INTO `equipe` (`id`, `nom`) VALUES
 -- Structure de la table `joueur`
 --
 
-CREATE TABLE `joueur` (
+CREATE TABLE `joueurs` (
   `id` int(11) NOT NULL,
   `prenom` varchar(255) NOT NULL,
   `nom` varchar(255) NOT NULL,
-  `date_de_naissance` date NOT NULL,
+  `date_naissance` date NOT NULL,
   `photo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

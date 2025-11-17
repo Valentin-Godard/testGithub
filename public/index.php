@@ -18,18 +18,17 @@ use RedwaneValentin\Foot2Club\Database\JoueurEquipeDatabase;
 
 
 $joueurDb = new RedwaneValentin\Foot2Club\Database\JoueurDatabase($connection);
-$matchDb = new RedwaneValentin\Foot2Club\Database\MatchDatabase($connection);
-$equipeDb = new EquipeDatabase($db);
-$joueurEquipeDb = new JoueurEquipeDatabase($db);
+$equipeDb = new EquipeDatabase($connection);
+$joueurEquipeDb = new JoueurEquipeDatabase($connection);
 
-$teamsStmt = $pdo->query("SELECT id, nom FROM equipe");
+$teamsStmt = $connection->query("SELECT id, nom FROM equipe");
 $teams = $teamsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$clubsStmt = $pdo->query("SELECT id, ville FROM club_adverse");
+$clubsStmt = $connection->query("SELECT id, ville FROM club_adverse");
 $clubs = $clubsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $message = "";
-
+$message_class = ""; 
 // ---------------------- AJOUT D'ÉQUIPE ----------------------
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'equipe') {
@@ -37,19 +36,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'eq
     $ville = trim($_POST["ville"]);
     $adresse = trim($_POST["adresse"]);
 
-    if ($nomEquipe !== "" && $ville !== "" && $adresse !== "") {
-        $equipe = new Equipe(null, $nomEquipe, '', ''); // nom seulement pour équipes
-        $equipeDb = new EquipeDatabase($pdo);
+    if ($nomEquipe !== "") { 
+        $equipe = new Equipe($nomEquipe); 
+        // $equipeDb est déjà créé en haut
 
-        $success = $equipeDb->addEquipeWithClubAdverseDirect($equipe, $ville, $adresse);
+        $equipeDb->insert($equipe); 
 
+        $success = true; 
         if ($success) {
             $message = "✅ Équipe ajoutée avec succès !";
+            $message_class = "success";  
         } else {
             $message = "❌ Erreur lors de l'ajout de l'équipe.";
+            $message_class = "error"; 
         }
     } else {
         $message = "❌ Veuillez remplir tous les champs.";
+        $message_class = "error"; 
     }
 }
 
@@ -75,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'jo
     // 1️⃣ Ajouter le joueur
     $joueur = new Joueur(null, $prenom, $nom, $dateNaissance, null, $photoName);
     $joueurDb->insert($joueur);
-    $joueurId = $pdo->lastInsertId();
+    $joueurId = $connection->lastInsertId();
 
     // 2️⃣ Ajouter la relation joueur ↔ équipe avec rôle
     $joueurEquipeDb->insert($joueurId, $equipeId, $roleValue);
@@ -93,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'st
     if ($prenom !== "" && $nom !== "" && $roleValue !== "") {
         $role = RoleStaff::from($roleValue);
         $staff = new Staff($prenom, $nom, $image, $role);
-        $staffDb = new StaffDatabase($pdo);
+        $staffDb = new StaffDatabase($connection);
         $success = $staffDb->insert($staff);
 
         $message = $success ? "✅ Membre du staff ajouté avec succès !" : "❌ Erreur lors de l'ajout du staff.";
@@ -121,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'ma
         $clubAdvId
     );
 
-    $matchDb = new MatchDatabase($pdo);
+    $matchDb = new MatchDatabase($connection);
     $matchDb->insert($match);
 
     $message = "✅ Match ajouté avec succès !";
@@ -258,16 +261,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['form_type'] ?? '') === 'ma
     <button type="submit">Ajouter le match</button>
 </form>
 
-
 <?php if (!empty($message)): ?>
-    <p class="message"><?= htmlspecialchars($message) ?></p>
+    <div class="message-box <?= $message_class ?>">
+        <?= htmlspecialchars($message) ?>
+    </div>
 <?php endif; ?>
-
 
 <h2>Liste des joueurs</h2>
 
 <?php
-$stmt = $pdo->query("SELECT j.id, j.nom, j.prenom, e.nom AS equipe
+$stmt = $connection->query("SELECT j.id, j.nom, j.prenom, e.nom AS equipe
                      FROM joueur j
                      LEFT JOIN equipe e ON j.id = e.id"); 
 $joueurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -292,7 +295,7 @@ $joueurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <h2>Résultats des matchs</h2>
 
 <?php
-$stmt = $pdo->query("
+$stmt = $connection->query("
     SELECT 
         m.id,
         e1.nom AS equipe,

@@ -81,12 +81,14 @@ class JoueurDatabase {
         $results = [];
 
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $role = Role::tryFrom($data['role']) ?? Role::GARDIEN;
+            
             $results[] = new Joueur(
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
                 Carbon::parse($data['date_naissance']),
-                Role::from($data['role']),
+                $role,
                 $data['photo']
             );
         }

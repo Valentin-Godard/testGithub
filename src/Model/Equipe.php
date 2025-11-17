@@ -7,12 +7,15 @@ use RedwaneValentin\Foot2Club\Model\Joueur;
 
 class Equipe{
     
+    private ?int $id; 
     private string $nom;
     private array $joueurs = []; // tableau de joueurs
     private array $matchs = [];  // tableau de matchs
 
-    public function __construct(string $nom) {
+    
+    public function __construct(string $nom, ?int $id = null) {
         $this->nom = $nom;
+        $this->id = $id;
     }
 
     public function setNom($nom)
@@ -21,7 +24,11 @@ class Equipe{
     }
 
     public function getNom(){
-        $this->nom;
+        return $this->nom; 
+    }
+
+    public function getId(): ?int { 
+        return $this->id;
     }
 
     public function ajouterJoueur(Joueur $joueur, string $role) {
@@ -38,12 +45,4 @@ class Equipe{
     public function getJoueurs(): array {
         return $this->joueurs;
     }
-
 }
-
-/*
-$equipe1 = new Equipe("PSG");
-$equipe1->ajouterJoueur($j1, "Attaquant");
-$equipe1->ajouterJoueur($j2, "Milieu");
-$equipe1->ajouterJoueur($j3, "Ailier");
-*/

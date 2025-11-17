@@ -1,5 +1,6 @@
 <?php
-namespace RedwaneValentin\Foot2Club\Model;
+
+namespace RedwaneValentin\Foot2Club\Database; 
 
 use RedwaneValentin\Foot2Club\Model\Equipe;
 use PDO;
@@ -12,31 +13,36 @@ class EquipeDatabase {
     }
 
     public function insert(Equipe $equipe): void {
-        $stmt = $this->pdo->prepare("INSERT INTO equipes (nom) VALUES (?)");
+       
+        $stmt = $this->pdo->prepare("INSERT INTO equipe (nom) VALUES (?)");
         $stmt->execute([$equipe->getNom()]);
     }
 
     public function findAll(): array {
-        $stmt = $this->pdo->query("SELECT * FROM equipes");
+        
+        $stmt = $this->pdo->query("SELECT * FROM equipe");
         $equipes = [];
 
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $equipes[] = new Equipe($data['id'], $data['nom']);
+            
+            $equipes[] = new Equipe($data['nom'], $data['id']);
         }
 
         return $equipes;
     }
 
     public function findById(int $id): ?Equipe {
-        $stmt = $this->pdo->prepare("SELECT * FROM equipes WHERE id = ?");
+        
+        $stmt = $this->pdo->prepare("SELECT * FROM equipe WHERE id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $data ? new Equipe($data['id'], $data['nom']) : null;
+       
+        return $data ? new Equipe($data['nom'], $data['id']) : null;
     }
 
     public function delete(int $id): void {
-        $stmt = $this->pdo->prepare("DELETE FROM equipes WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM equipe WHERE id = ?");
         $stmt->execute([$id]);
     }
 }

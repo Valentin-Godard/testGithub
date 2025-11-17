@@ -13,9 +13,9 @@ class JoueurDatabase {
         $this->pdo = $pdo;
     }
 
-    /**
-     * Ajoute un joueur dans la base
-     */
+    
+    //Ajoute un joueur dans la base
+    
     public function insert(Joueur $joueur): void {
         $stmt = $this->pdo->prepare("
             INSERT INTO joueurs (nom, prenom, date_naissance, photo, role)
@@ -31,9 +31,9 @@ class JoueurDatabase {
         ]);
     }
 
-    /**
-     * Met à jour un joueur existant
-     */
+    
+    //Met à jour un joueur existant
+    
     public function update(Joueur $joueur): void {
         $stmt = $this->pdo->prepare("
             UPDATE joueurs
@@ -51,21 +51,23 @@ class JoueurDatabase {
         ]);
     }
 
-    /**
-     * Récupère un joueur par son ID
-     */
+    
+    //Récupère un joueur par son ID
+    
     public function findById(int $id): ?Joueur {
         $stmt = $this->pdo->prepare("SELECT * FROM joueurs WHERE id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
+            $role = Role::tryFrom($data['role']) ?? Role::Gardien; 
+
             return new Joueur(
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
                 Carbon::parse($data['date_naissance']),
-                Role::from($data['role']),
+                $role,
                 $data['photo']
             );
         }
@@ -73,20 +75,32 @@ class JoueurDatabase {
         return null;
     }
 
-    /**
-     * Retourne la liste de tous les joueurs
-     */
+    
+    //Retourne la liste de tous les joueurs
     public function findAll(): array {
+        
+        // 1. Exécute la requête
         $stmt = $this->pdo->query("SELECT * FROM joueurs");
-        $results = [];
+        
+        // 2. Récupère TOUTES les données d'un coup dans un tableau
+        $allData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        count($allData);
+        echo "<pre>";
+        var_dump($allData);
+        echo "</pre>";
+        die();
+        $results = []; 
+        foreach ($allData as $data) {
+            
+            $role = Role::tryFrom($data['role']) ?? Role::GARDIEN;
+
             $results[] = new Joueur(
                 $data['id'],
                 $data['prenom'],
                 $data['nom'],
                 Carbon::parse($data['date_naissance']),
-                Role::from($data['role']),
+                $role,
                 $data['photo']
             );
         }
@@ -94,9 +108,8 @@ class JoueurDatabase {
         return $results;
     }
 
-    /**
-     * Supprime un joueur
-     */
+
+      // Supprime un joueur
     public function delete(int $id): void {
         $stmt = $this->pdo->prepare("DELETE FROM joueurs WHERE id = ?");
         $stmt->execute([$id]);

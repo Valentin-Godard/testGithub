@@ -107,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <button type="submit" class="btn">Ajouter le joueur</button>
       </form>
+      <button> <a href="listeJoueurs.php" class="btn-secondary">Retour à la liste des joueurs</a></button>
     </section>
   </main>
 
