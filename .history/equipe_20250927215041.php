@@ -1,0 +1,24 @@
+<?php
+
+
+require_once "Joueur.php";
+require_once "Match.php";
+
+class equipe{
+    
+    private string $nom;
+
+    public function __construct(string $nom) {
+        $this->nom = $nom;
+    }
+
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    }
+
+    public function getNom(){
+        $this->nom;
+    }
+}
+

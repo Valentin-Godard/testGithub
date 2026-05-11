@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+<?php
+
+class equipe{
+    
+}
+

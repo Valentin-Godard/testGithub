@@ -1,0 +1,491 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    background-color: #1d2b47;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header div {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+header nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s ease-in-out;
+}
+
+header nav a:hover {
+    color: #00d1b2;
+}
+
+/* Conteneur principal */
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Titres */
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #1d2b47;
+}
+
+/* Labels et champs */
+label {
+    display: block;
+    margin: 12px 0 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Bouton */
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background 0.3s ease-in-out;
+}
+
+
+/* Footer */
+footer {
+    margin-bottom: 0;
+    background: #1d2b47;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+}
+
+footer a {
+    color: #00d1b2;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* Header /
+header {
+    background-color: #1d2b47;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header div {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+header nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s ease-in-out;
+}
+
+header nav a:hover {
+    color: #00d1b2;
+}
+*/
+/* Conteneur principal */
+.container {
+    width: 80%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* ==============================================
+   STYLES UNIQUES - PAGE LISTE JOUEURS (LJR)
+   ============================================== */
+.table-container_LJR {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px 40px;
+    margin-top: 20px;
+    border: 1px solid #e9e9e9;
+}
+
+.table-title_LJR {
+    color: #1d2b47;
+    margin-bottom: 20px;
+}
+
+.styled-table_LJR {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.styled-table_LJR thead tr {
+    background-color: #1d2b47;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table_LJR th,
+.styled-table_LJR td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.styled-table_LJR tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.action-links_LJR a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white;
+    margin-right: 5px;
+}
+
+.action-links_LJR .edit_LJR {
+    background-color: #f0ad4e; /* Orange */
+}
+
+.action-links_LJR .delete_LJR {
+    background-color: #d9534f; /* Rouge */
+}
+
+.add-button_LJR {
+    display: inline-block;
+    text-decoration: none;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+.add-button_LJR:hover {
+    background: #45a049;
+}
+
+
+/* ==============================================
+   STYLES UNIQUES - PAGE MODIFIER JOUEUR (MDR)
+   ============================================== */
+.form-container_MDR {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px 40px;
+    margin-top: 20px;
+    border: 1px solid #e9e9e9;
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.form-title_MDR {
+    text-align: center;
+    color: #1d2b47;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.form_MDR {
+    width: 100%;
+}
+
+.form-label_MDR {
+    display: block;
+    margin: 18px 0 6px 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-input_MDR {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.form-input_MDR:focus {
+    outline: none;
+    border-color: #1d2b47;
+    box-shadow: 0 0 5px rgba(29, 43, 71, 0.2);
+}
+
+.form-submit_MDR {
+    display: block;
+    width: 100%;
+    background: #f0ad4e; /* Orange pour "modifier" */
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    margin-top: 25px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.form-submit_MDR:hover {
+    background: #ec971f;
+}
+
+.form-back-link_MDR {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #555;
+}
+
+.photo-info_MDR {
+    font-size: 14px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/* Boîte de message générique (peut être réutilisée) */
+.message-box {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    border: 1px solid transparent;
+}
+.message-box.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border-color: #d6e9c6;
+}
+.message-box.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border-color: #ebccd1;
+}
+/* Animation d'apparition */
+.fade-in { 
+    animation: fadeInAnimation 1s ease-in;
+}  
+@keyframes fadeInAnimation {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+/* Styles pour les liens dans le footer */
+footer a {
+    color: #00d1b2;
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+/* Styles pour les boutons dans le footer */
+footer button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.3s ease-in-out;
+}
+footer button:hover {
+    background: #45a049;
+}
+/* Styles pour les liens dans les boutons du footer */
+footer button a {
+    color: white;
+    text-decoration: none;
+}
+footer button a:hover {
+    text-decoration: none;
+}
+
+/* ==============================================
+   STYLES UNIQUES - AJOUTER ÉQUIPE (AEQ)
+   ============================================== */
+.form-container_AEQ {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px 40px;
+    margin-top: 20px;
+    border: 1px solid #e9e9e9;
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.form-title_AEQ {
+    text-align: center;
+    color: #1d2b47;
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.form_AEQ {
+    width: 100%;
+}
+
+.form-label_AEQ {
+    display: block;
+    margin: 18px 0 6px 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-input_AEQ {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.form-submit_AEQ {
+    display: block;
+    width: 100%;
+    background: #4CAF50; /* Vert */
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    margin-top: 25px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.form-back-link_AEQ {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #555;
+}
+
+/* ==============================================
+   STYLES UNIQUES - LISTE ÉQUIPES (LEQ)
+   ============================================== */
+.table-container_LEQ {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px 40px;
+    margin-top: 20px;
+    border: 1px solid #e9e9e9;
+}
+
+.table-title_LEQ {
+    color: #1d2b47;
+    margin-bottom: 20px;
+}
+
+.styled-table_LEQ {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 16px;
+    text-align: left;
+}
+
+.styled-table_LEQ thead tr {
+    background-color: #1d2b47;
+    color: #ffffff;
+}
+
+.styled-table_LEQ th,
+.styled-table_LEQ td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.styled-table_LEQ tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.action-links_LEQ a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white;
+    margin-right: 5px;
+}
+
+.action-links_LEQ .edit_LEQ {
+    background-color: #f0ad4e; /* Orange */
+}
+
+.action-links_LEQ .delete_LEQ {
+    background-color: #d9534f; /* Rouge */
+}
+
+.add-button_LEQ {
+    display: inline-block;
+    text-decoration: none;
+    background: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    margin-top: 10px;
+    border-radius: 6px;
+    font-size: 16px;
+}

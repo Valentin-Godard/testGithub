@@ -1,0 +1,13 @@
+{
+    "name": "redwane-valentin/foot-2-club",
+    "description": "Site internet permettant la gestion d'un club de foot afin de gérer les différents joueurs du club, ses équipes ainsi que les matchs effectués avec les équipes adverses.",
+    "autoload": {
+        "psr-4": {
+            "RedwaneValentin\\Foot2Club\\": "src/"
+        }
+    },
+    "require": {
+        "respect/validation": "^2.4",
+        "nesbot/carbon": "^3.10"
+    }
+}

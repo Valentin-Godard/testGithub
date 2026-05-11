@@ -1,0 +1,90 @@
+
+<?php 
+
+namespace RedwaneValentin\Foot2Club\Model;
+
+use RedwaneValentin\Foot2Club\Contract\Savable;
+use RedwaneValentin\Foot2Club\Trait\Image;
+use RedwaneValentin\Foot2Club\Enum\Role;
+use Carbon\Carbon;;
+use PDO;
+
+class Joueur implements Savable {
+    use Image;
+
+    private ?int $id;
+    private string $prenom;
+    private string $nom;
+    private Carbon $birthdate;
+    private Role $role;
+
+    public function __construct(?int $id, string $prenom, string $nom, Carbon $birthdate, Role $role, string $image) { 
+        $this->id = $id;
+        $this->prenom = $prenom;
+        $this->nom = $nom;
+        $this->birthdate = $birthdate;
+        $this->role = $role;
+        $this->setImage($image);
+    }
+
+    //suivre : https://www.php.net/manual/fr/pdostatement.execute.php
+    public function save(PDO $pdo): void {
+        if ($this->id === null) {
+            $stmt = $pdo->prepare("INSERT INTO joueurs (nom, prenom, date_naissance, photo, role) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$this->nom, $this->prenom, $this->birthdate->format("Y-m-d"), $this->getImage(), $this->role->value]);
+            $this->id = $pdo->lastInsertId();
+        } else {
+            $stmt = $pdo->prepare("UPDATE joueurs SET nom=?, prenom=?, date_naissance=?, photo=?, role=? WHERE id=?");
+            $stmt->execute([$this->nom, $this->prenom, $this->birthdate->format("Y-m-d"), $this->getImage(), $this->role->value, $this->id]);
+        }
+    }
+
+    // Getter et Setter pour prénom
+    public function getPrenom(): string {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): void {
+        $this->prenom = $prenom;
+    }
+
+    // Getter et Setter pour nom
+    public function getNom(): string {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): void {
+        $this->nom = $nom;
+    }
+
+    // Getter et Setter pour birthdate
+    public function getBirthdate(): Carbon { 
+    return $this->birthdate;
+}
+
+public function setBirthdate(Carbon $birthdate): void { 
+    $this->birthdate = $birthdate;
+}
+
+    public function getImage(): string {
+        return $this->image;
+    }
+
+    public function setImage(string $image): void {
+        $this->image = $image;
+    }
+
+    public function getRole(): string {
+        return $this->role;
+    }
+
+    public function setRole(string $role): void {
+    $this->role = $role;
+}
+}
+
+/*
+$j1 = new Joueur("Kylian", "Mbappé", new DateTime("1998-12-20"), "mbappe.jpg");
+$j2 = new Joueur("Antoine", "Griezmann", new DateTime("1991-03-21"), "griezmann.jpg");
+$j3 = new Joueur("Ousmane", "Dembélé", new DateTime("1997-05-15"), "dembele.jpg");
+*/
